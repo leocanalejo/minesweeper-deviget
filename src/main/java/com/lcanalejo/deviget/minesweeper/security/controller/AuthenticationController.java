@@ -1,9 +1,9 @@
 package com.lcanalejo.deviget.minesweeper.security.controller;
 
+import com.lcanalejo.deviget.minesweeper.exception.AuthenticationException;
 import com.lcanalejo.deviget.minesweeper.security.config.JwtUtil;
 import com.lcanalejo.deviget.minesweeper.security.dto.JwtResponse;
 import com.lcanalejo.deviget.minesweeper.security.dto.LoginRequest;
-import com.lcanalejo.deviget.minesweeper.security.exception.AuthenticationException;
 import com.lcanalejo.deviget.minesweeper.security.service.JwtUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

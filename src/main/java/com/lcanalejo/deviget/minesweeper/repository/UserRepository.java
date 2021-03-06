@@ -1,12 +1,12 @@
 package com.lcanalejo.deviget.minesweeper.repository;
 
-import com.lcanalejo.deviget.minesweeper.entity.UserAccountEntity;
+import com.lcanalejo.deviget.minesweeper.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<UserAccountEntity, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    Optional<UserAccountEntity> findByUsername(String username);
+    Optional<UserEntity> findByUsername(String username);
 
 }

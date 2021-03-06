@@ -1,4 +1,4 @@
-package com.lcanalejo.deviget.minesweeper.security.exception;
+package com.lcanalejo.deviget.minesweeper.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

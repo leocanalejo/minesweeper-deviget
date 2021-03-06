@@ -18,11 +18,11 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_account")
-public class UserAccountEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "username", unique = true)

@@ -1,6 +1,6 @@
 package com.lcanalejo.deviget.minesweeper.security.service;
 
-import com.lcanalejo.deviget.minesweeper.entity.UserAccountEntity;
+import com.lcanalejo.deviget.minesweeper.entity.UserEntity;
 import com.lcanalejo.deviget.minesweeper.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -20,7 +20,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserAccountEntity> userEntity = userRepository.findByUsername(username);
+        Optional<UserEntity> userEntity = userRepository.findByUsername(username);
 
         if (!userEntity.isPresent()) {
             throw new UsernameNotFoundException("Username not found");

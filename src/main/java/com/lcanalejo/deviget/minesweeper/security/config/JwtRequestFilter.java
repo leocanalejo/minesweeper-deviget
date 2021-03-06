@@ -1,6 +1,6 @@
 package com.lcanalejo.deviget.minesweeper.security.config;
 
-import com.lcanalejo.deviget.minesweeper.security.exception.AuthenticationException;
+import com.lcanalejo.deviget.minesweeper.exception.AuthenticationException;
 import com.lcanalejo.deviget.minesweeper.security.service.JwtUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
