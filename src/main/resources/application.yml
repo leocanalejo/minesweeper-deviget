@@ -1,4 +1,18 @@
 server:
   port: 8080
-  servlet:
-    context-path: /api/minesweeper
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/minesweeper
+    driver-class-name: org.postgresql.Driver
+    username: minesweeper
+    password: minesweeper
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+
+jwt:
+  secret: 'secret' # JWT secret is here to facilitate coding, it should be in a more secure location
