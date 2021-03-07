@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateGame {
 
+    private String name;
+
     private Integer rows;
 
     private Integer columns;

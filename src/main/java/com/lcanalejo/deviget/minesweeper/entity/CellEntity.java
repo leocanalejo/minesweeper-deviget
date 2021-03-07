@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,7 +26,7 @@ import javax.persistence.Table;
 public class CellEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -34,6 +36,7 @@ public class CellEntity {
     @Column(name = "column_position")
     private Integer columnPosition;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private CellStatus cellStatus;
 

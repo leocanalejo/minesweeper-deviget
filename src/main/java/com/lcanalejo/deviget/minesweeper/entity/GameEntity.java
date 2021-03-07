@@ -5,10 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OrderBy;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,9 +31,12 @@ import java.util.List;
 public class GameEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "columns")
     private Integer columns;
@@ -38,6 +44,7 @@ public class GameEntity {
     @Column(name = "rows")
     private Integer rows;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private GameStatus gameStatus;
 
@@ -48,6 +55,7 @@ public class GameEntity {
     private Long elapsedTimeInMilliseconds;
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.REMOVE)
+    @OrderBy(clause = "row_position ASC, column_position ASC")
     private List<CellEntity> cells;
 
     @ManyToOne

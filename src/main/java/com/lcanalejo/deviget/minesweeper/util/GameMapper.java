@@ -8,6 +8,7 @@ public final class GameMapper {
     public static Game toDto(GameEntity gameEntity) {
         return Game.builder()
                 .id(gameEntity.getId())
+                .name(gameEntity.getName())
                 .rows(gameEntity.getRows())
                 .columns(gameEntity.getColumns())
                 .gameStatus(gameEntity.getGameStatus())

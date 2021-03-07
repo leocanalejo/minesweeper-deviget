@@ -17,6 +17,8 @@ public class Game {
 
     private Long id;
 
+    private String name;
+
     private Integer columns;
 
     private Integer rows;

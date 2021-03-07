@@ -9,6 +9,7 @@ import com.lcanalejo.deviget.minesweeper.enums.GameStatus;
 import com.lcanalejo.deviget.minesweeper.exception.PreconditionException;
 import com.lcanalejo.deviget.minesweeper.repository.GameRepository;
 import com.lcanalejo.deviget.minesweeper.util.GameMapper;
+import com.lcanalejo.deviget.minesweeper.util.MathUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class GameService {
     @Transactional
     public Game createGame(CreateGame createGame) {
         GameEntity gameEntity = GameEntity.builder()
+                .name(createGame.getName())
                 .columns(createGame.getColumns())
                 .rows(createGame.getRows())
                 .gameStatus(GameStatus.CREATED)
@@ -87,15 +89,20 @@ public class GameService {
             throw new PreconditionException(String.format("Can not pause game %s with status %s", gameId, gameEntity.getGameStatus()));
         }
 
-        gameEntity.setElapsedTimeInMilliseconds(gameEntity.getElapsedTimeInMilliseconds() + (gameEntity.getLastStartedTime() != null ? gameEntity.getLastStartedTime().until(LocalDateTime.now(), ChronoUnit.MILLIS) : 0));
+        gameEntity.setElapsedTimeInMilliseconds((gameEntity.getElapsedTimeInMilliseconds() != null ? gameEntity.getElapsedTimeInMilliseconds() : 0) + (gameEntity.getLastStartedTime() != null ? gameEntity.getLastStartedTime().until(LocalDateTime.now(), ChronoUnit.MILLIS) : 0));
         gameEntity.setLastStartedTime(null);
         gameEntity.setGameStatus(GameStatus.PAUSED);
-        GameEntity savedGameEntity = gameRepository.save(gameEntity);
 
-        return GameMapper.toDto(gameRepository.save(savedGameEntity));
+        return GameMapper.toDto(gameRepository.save(gameEntity));
     }
 
-    private List<CellEntity> createBoard(Integer rows, Integer columns, Integer mines, GameEntity gameEntity) {
+    @Transactional
+    public Game save(GameEntity gameEntity) {
+        return GameMapper.toDto(gameRepository.save(gameEntity));
+    }
+
+    @Transactional
+    protected List<CellEntity> createBoard(Integer rows, Integer columns, Integer mines, GameEntity gameEntity) {
 
         final int MINE = 99;
 
@@ -120,8 +127,8 @@ public class GameService {
             board[r][c] = MINE;
 
             // Iterate the mine's contour to increase the minesAround value
-            for (int r2 = max(0, r-1); r2 < min(rows,r+2); r2++) {
-                for (int c2 = max(0,c-1); c2 < min(columns,c+2); c2++) {
+            for (int r2 = MathUtil.max(0, r-1); r2 < MathUtil.min(rows,r+2); r2++) {
+                for (int c2 = MathUtil.max(0,c-1); c2 < MathUtil.min(columns,c+2); c2++) {
                     if (board[r2][c2] != MINE ) { // If it's not a mine
                         board[r2][c2]++; // Increase the mineAround value
                     }
@@ -145,14 +152,6 @@ public class GameService {
         }
 
         return cellEntities;
-    }
-
-    private int max(int a, int b){
-        return Math.max(a, b);
-    }
-
-    private int min(int a, int b){
-        return Math.min(a, b);
     }
 
 }
