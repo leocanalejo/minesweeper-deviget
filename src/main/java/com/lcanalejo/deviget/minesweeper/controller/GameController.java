@@ -5,6 +5,7 @@ import com.lcanalejo.deviget.minesweeper.dto.Game;
 import com.lcanalejo.deviget.minesweeper.service.GameService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,11 @@ public class GameController {
     @PostMapping
     public Game createGame(@RequestBody @Validated CreateGame createGame) {
         return gameService.createGame(createGame);
+    }
+
+    @DeleteMapping("/{gameId:\\d+}")
+    public void deleteGame(@PathVariable Long gameId) {
+        gameService.deleteGame(gameId);
     }
 
     @PatchMapping("/{gameId:\\d+}/start")

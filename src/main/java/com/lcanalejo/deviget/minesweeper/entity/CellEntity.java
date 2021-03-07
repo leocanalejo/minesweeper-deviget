@@ -27,7 +27,7 @@ public class CellEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "cell_id")
     private Long id;
 
     @Column(name = "row_position")

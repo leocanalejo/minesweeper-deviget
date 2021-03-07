@@ -32,7 +32,7 @@ public class GameEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "game_id")
     private Long id;
 
     @Column(name = "name")

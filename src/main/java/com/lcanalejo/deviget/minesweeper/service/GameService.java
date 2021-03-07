@@ -97,8 +97,13 @@ public class GameService {
     }
 
     @Transactional
-    public Game save(GameEntity gameEntity) {
+    public Game saveGame(GameEntity gameEntity) {
         return GameMapper.toDto(gameRepository.save(gameEntity));
+    }
+
+    @Transactional
+    public void deleteGame(Long gameId) {
+        gameRepository.deleteById(gameId);
     }
 
     @Transactional

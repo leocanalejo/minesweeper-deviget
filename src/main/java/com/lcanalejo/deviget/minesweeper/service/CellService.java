@@ -94,7 +94,7 @@ public class CellService {
             gameEntity.setGameStatus(GameStatus.LOST);
             gameEntity.setElapsedTimeInMilliseconds(gameEntity.getElapsedTimeInMilliseconds() + (gameEntity.getLastStartedTime() != null ? gameEntity.getLastStartedTime().until(LocalDateTime.now(), ChronoUnit.MILLIS) : 0));
             gameEntity.setLastStartedTime(null);
-            return gameService.save(gameEntity);
+            return gameService.saveGame(gameEntity);
         }
 
         revealCells(cellEntity);
