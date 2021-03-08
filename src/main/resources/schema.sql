@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS user_account (
     user_id SERIAL PRIMARY KEY,
-    username varchar(128) NOT NULL,
+    username varchar(128) UNIQUE NOT NULL,
     password varchar(512) NOT NULL
 );
 
@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS game (
     last_started_time timestamptz,
     elapsed_time_milliseconds bigint DEFAULT 0,
     user_id bigint,
-    CONSTRAINT fk_game_users FOREIGN KEY (user_id) REFERENCES user_account (user_id)
+    CONSTRAINT fk_game_users FOREIGN KEY (user_id) REFERENCES user_account (user_id),
+    CONSTRAINT unq_game_name_user_id UNIQUE (name, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS cell (

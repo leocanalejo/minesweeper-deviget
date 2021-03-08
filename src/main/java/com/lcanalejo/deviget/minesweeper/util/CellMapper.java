@@ -12,7 +12,7 @@ public class CellMapper {
         return cells.stream().map(CellMapper::toDto).collect(Collectors.toList());
     }
 
-    private static Cell toDto(CellEntity cellEntity) {
+    public static Cell toDto(CellEntity cellEntity) {
         return Cell.builder()
                 .id(cellEntity.getId())
                 .rowPosition(cellEntity.getRowPosition())

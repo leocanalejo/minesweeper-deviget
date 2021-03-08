@@ -13,6 +13,9 @@ import com.lcanalejo.deviget.minesweeper.util.MathUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +44,7 @@ public class GameService {
                 .rows(createGame.getRows())
                 .gameStatus(GameStatus.CREATED)
                 .user(userService.getAuthenticatedUser())
+                .elapsedTimeInMilliseconds(0L)
                 .build();
         GameEntity savedGameEntity = gameRepository.save(gameEntity);
 
@@ -54,6 +59,12 @@ public class GameService {
         GameEntity gameEntity = gameRepository.findById(gameId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Game with id %s not found.", gameId)));
         return GameMapper.toDto(gameEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Game> getGames(Pageable pageable) {
+        Page<GameEntity> games = gameRepository.findByUser(userService.getAuthenticatedUser(), pageable);
+        return new PageImpl<>(games.stream().map(GameMapper::toDto).collect(Collectors.toList()));
     }
 
     @Transactional

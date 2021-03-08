@@ -6,6 +6,7 @@ import com.lcanalejo.deviget.minesweeper.security.dto.JwtResponse;
 import com.lcanalejo.deviget.minesweeper.security.dto.LoginRequest;
 import com.lcanalejo.deviget.minesweeper.security.service.JwtUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +23,7 @@ public class AuthenticationController {
     private final JwtUtil jwtTokenUtil;
     private final JwtUserDetailsService userDetailsService;
 
-    @PostMapping(value = "/authenticate")
+    @PostMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public JwtResponse authenticate(@RequestBody LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
