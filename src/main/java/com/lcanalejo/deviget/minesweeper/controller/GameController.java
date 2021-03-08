@@ -3,6 +3,11 @@ package com.lcanalejo.deviget.minesweeper.controller;
 import com.lcanalejo.deviget.minesweeper.dto.CreateGame;
 import com.lcanalejo.deviget.minesweeper.dto.Game;
 import com.lcanalejo.deviget.minesweeper.service.GameService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Api(value = "Game", description = "Game Management API")
 @RestController
 @RequestMapping("/games")
 @RequiredArgsConstructor
@@ -26,39 +32,76 @@ public class GameController {
 
     private final GameService gameService;
 
+    @ApiOperation(value = "Create a new game")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "The game was successfully created."),
+            @ApiResponse(code = 500, message = "Internal server error.")}
+    )
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Game createGame(@RequestBody @Validated CreateGame createGame) {
+    public Game createGame(@ApiParam(name = "user", value = "The game to create", required = true) @RequestBody @Validated CreateGame createGame) {
         return gameService.createGame(createGame);
     }
 
+    @ApiOperation(value = "Delete a game")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "The game was successfully deleted."),
+            @ApiResponse(code = 404, message = "Can't delete game because it doesn't exists."),
+            @ApiResponse(code = 412, message = "Can't delete game because authenticated user is not the owner."),
+            @ApiResponse(code = 500, message = "Internal server error.")}
+    )
     @DeleteMapping(value = "/{gameId:\\d+}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGame(@PathVariable Long gameId) {
+    public void deleteGame(@ApiParam(name = "gameId", value = "The game id to delete", required = true) @PathVariable Long gameId) {
         gameService.deleteGame(gameId);
     }
 
+    @ApiOperation(value = "Start a game in status CREATED or PAUSED")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The game was successfully started."),
+            @ApiResponse(code = 404, message = "Can't start game because it doesn't exists."),
+            @ApiResponse(code = 412, message = "Can't start game because authenticated user is not the owner or its status is incorrect."),
+            @ApiResponse(code = 500, message = "Internal server error.")}
+    )
     @PatchMapping(value = "/{gameId:\\d+}/start", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Game startGame(@PathVariable Long gameId) {
+    public Game startGame(@ApiParam(name = "gameId", value = "The game id to start", required = true) @PathVariable Long gameId) {
         return gameService.startGame(gameId);
     }
 
+    @ApiOperation(value = "Pause a game in status PLAYING")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The game was successfully paused."),
+            @ApiResponse(code = 404, message = "Can't pause game because it doesn't exists."),
+            @ApiResponse(code = 412, message = "Can't pause game because authenticated user is not the owner or its status is incorrect."),
+            @ApiResponse(code = 500, message = "Internal server error.")}
+    )
     @PatchMapping(value = "/{gameId:\\d+}/pause", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Game pauseGame(@PathVariable Long gameId) {
+    public Game pauseGame(@ApiParam(name = "gameId", value = "The game id to pause", required = true) @PathVariable Long gameId) {
         return gameService.pauseGame(gameId);
     }
 
+    @ApiOperation(value = "Get a game")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The game was successfully retrieved."),
+            @ApiResponse(code = 404, message = "Can't retrieve game because it doesn't exists."),
+            @ApiResponse(code = 500, message = "Internal server error.")}
+    )
     @GetMapping(value = "/{gameId:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Game getGame(@PathVariable Long gameId) {
+    public Game getGame(@ApiParam(name = "gameId", value = "The game id to retrieve", required = true) @PathVariable Long gameId) {
         return gameService.getGame(gameId);
     }
 
+    @ApiOperation(value = "Get games in a page")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The games were successfully retrieved."),
+            @ApiResponse(code = 500, message = "Internal server error.")}
+    )
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Page<Game> getGames(final Pageable pageable) {
+    public Page<Game> getGames(@ApiParam(name = "pageable", value = "The page info to retrieve games", required = true) final Pageable pageable) {
         return gameService.getGames(pageable);
     }
 

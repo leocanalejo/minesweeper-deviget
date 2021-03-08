@@ -114,6 +114,13 @@ public class GameService {
 
     @Transactional
     public void deleteGame(Long gameId) {
+        GameEntity gameEntity = gameRepository.findById(gameId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Game with id %s not found.", gameId)));
+
+        if (!userService.getAuthenticatedUser().getId().equals(gameEntity.getUser().getId())) {
+            throw new PreconditionException(String.format("Authenticated user is not the owner of game with id %s", gameId));
+        }
+
         gameRepository.deleteById(gameId);
     }
 

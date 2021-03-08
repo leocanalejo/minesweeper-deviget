@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,9 +24,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtRequestFilter jwtRequestFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers(AUTH_WHITELIST);
     }
 
     @Override
@@ -34,6 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/authenticate").permitAll()
                 .antMatchers(HttpMethod.POST, "/users").permitAll()
+                .antMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
