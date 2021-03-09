@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/cells")
 @RequiredArgsConstructor
+@Slf4j
 public class CellController {
 
     private final CellService cellService;
@@ -36,6 +38,7 @@ public class CellController {
     @PutMapping(value = "/{cellId:\\d+}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Game flagCell(@ApiParam(name = "cellId", value = "The cell id to put a flag", required = true) @PathVariable Long cellId) {
+        log.info("Putting a flag in cell with id {}", cellId);
         return cellService.flagCell(cellId);
     }
 
@@ -49,6 +52,7 @@ public class CellController {
     @DeleteMapping(value = "/{cellId:\\d+}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Game unflagCell(@ApiParam(name = "cellId", value = "The cell id to remove a flag", required = true) @PathVariable Long cellId) {
+        log.info("Removing a flag in cell with id {}", cellId);
         return cellService.unflagCell(cellId);
     }
 
@@ -62,6 +66,7 @@ public class CellController {
     @PatchMapping(value = "/{cellId:\\d+}/reveal", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Game revealCell(@ApiParam(name = "cellId", value = "The cell id to reveal", required = true) @PathVariable Long cellId) {
+        log.info("Revealing cell with id {}", cellId);
         return cellService.revealCell(cellId);
     }
 

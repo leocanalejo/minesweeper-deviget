@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/games")
 @RequiredArgsConstructor
+@Slf4j
 public class GameController {
 
     private final GameService gameService;
@@ -40,6 +42,7 @@ public class GameController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Game createGame(@ApiParam(name = "user", value = "The game to create", required = true) @RequestBody @Validated CreateGame createGame) {
+        log.info("Creating a new game with name {}", createGame.getName());
         return gameService.createGame(createGame);
     }
 
@@ -53,6 +56,7 @@ public class GameController {
     @DeleteMapping(value = "/{gameId:\\d+}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteGame(@ApiParam(name = "gameId", value = "The game id to delete", required = true) @PathVariable Long gameId) {
+        log.info("Deleting game with id {}", gameId);
         gameService.deleteGame(gameId);
     }
 
@@ -66,6 +70,7 @@ public class GameController {
     @PatchMapping(value = "/{gameId:\\d+}/start", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Game startGame(@ApiParam(name = "gameId", value = "The game id to start", required = true) @PathVariable Long gameId) {
+        log.info("Starting game with id {}", gameId);
         return gameService.startGame(gameId);
     }
 
@@ -79,6 +84,7 @@ public class GameController {
     @PatchMapping(value = "/{gameId:\\d+}/pause", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Game pauseGame(@ApiParam(name = "gameId", value = "The game id to pause", required = true) @PathVariable Long gameId) {
+        log.info("Pausing game with id {}", gameId);
         return gameService.pauseGame(gameId);
     }
 
@@ -91,6 +97,7 @@ public class GameController {
     @GetMapping(value = "/{gameId:\\d+}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Game getGame(@ApiParam(name = "gameId", value = "The game id to retrieve", required = true) @PathVariable Long gameId) {
+        log.info("Retrieving game with id {}", gameId);
         return gameService.getGame(gameId);
     }
 
@@ -102,6 +109,7 @@ public class GameController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Page<Game> getGames(@ApiParam(name = "pageable", value = "The page info to retrieve games", required = true) final Pageable pageable) {
+        log.info("Retrieving games for page with page number {} and page size {}", pageable.getPageNumber(), pageable.getPageSize());
         return gameService.getGames(pageable);
     }
 

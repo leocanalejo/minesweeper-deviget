@@ -8,6 +8,7 @@ import com.lcanalejo.deviget.minesweeper.security.config.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Transactional
     public void createUser(User user) {
         Optional<UserEntity> maybeExistingUser = userRepository.findByUsername(user.getUsername());
 
@@ -33,6 +35,7 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
+    @Transactional(readOnly = true)
     public UserEntity getAuthenticatedUser() {
         return SecurityUtil.getAuthenticatedUsername().flatMap(userRepository::findByUsername).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }

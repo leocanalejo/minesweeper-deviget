@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ClientConfig {
 
-    private final static String API_BASE_URL = "minesweeper.base_url";
-
     @Bean
-    public MinesweeperClient minesweeperClient(@Value(API_BASE_URL) String baseUrl) {
+    public MinesweeperClient minesweeperClient(@Value("${minesweeper.base_url}") String baseUrl) {
         return new MinesweeperClientImpl(baseUrl);
     }
 

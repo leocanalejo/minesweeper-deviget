@@ -2,6 +2,7 @@ package com.lcanalejo.deviget.minesweeper.api.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lcanalejo.deviget.minesweeper.api.dto.RestResponsePage;
 import com.lcanalejo.deviget.minesweeper.dto.CreateGame;
 import com.lcanalejo.deviget.minesweeper.dto.Game;
 import com.lcanalejo.deviget.minesweeper.dto.User;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -28,13 +31,15 @@ public class MinesweeperClientImpl implements MinesweeperClient {
 
     private final String baseUrl;
     private ObjectMapper objectMapper = new ObjectMapper();
-    private RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+
+    private static final String BEARER = "Bearer ";
 
     @Override
     public void createUser(User user) {
         String url = baseUrl + "/users";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         log.info("Executing: " + url + "with body: " + user);
 
@@ -50,7 +55,7 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public JwtResponse authenticate(LoginRequest loginRequest) {
         String url = baseUrl + "/authenticate";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         log.info("Executing: " + url + " with body " + loginRequest);
 
@@ -66,8 +71,8 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public Game createGame(CreateGame createGame, String jwt) {
         String url = baseUrl + "/games";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url + "with body: " + createGame);
 
@@ -83,7 +88,7 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public void deleteGame(Long gameId, String jwt) {
         String url = baseUrl + "/games/" + gameId;
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url);
 
@@ -99,7 +104,7 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public Game getGame(Long gameId, String jwt) {
         String url = baseUrl + "/games/" + gameId;
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url);
 
@@ -115,14 +120,14 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public Page<Game> getGames(Pageable paginated, String jwt) {
         String url = baseUrl + "/games";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url + " with body: " + paginated);
 
         try {
             ResponseEntity<String> response = this.restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(paginated, headers), new ParameterizedTypeReference<String>() {});
-            return objectMapper.readValue(response.getBody(), new TypeReference<Page<Game>>() {});
+            return objectMapper.readValue(response.getBody(), new TypeReference<RestResponsePage<Game>>() {});
         } catch (HttpClientErrorException | IOException e) {
             log.error("Not able to get the response from url: {}", url);
             throw new RestClientException(String.format("Not able to get the response from url: %s", url), e);
@@ -133,7 +138,7 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public Game startGame(Long gameId, String jwt) {
         String url = baseUrl + "/games/" + gameId + "/start";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url);
 
@@ -149,7 +154,7 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public Game pauseGame(Long gameId, String jwt) {
         String url = baseUrl + "/games/" + gameId + "/pause";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url);
 
@@ -165,7 +170,7 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public Game flagCell(Long cellId, String jwt) {
         String url = baseUrl + "/cells/" + cellId + "/flag";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url);
 
@@ -181,7 +186,7 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public Game unflagCell(Long cellId, String jwt) {
         String url = baseUrl + "/cells/" + cellId + "/flag";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url);
 
@@ -197,7 +202,7 @@ public class MinesweeperClientImpl implements MinesweeperClient {
     public Game revealCell(Long cellId, String jwt) {
         String url = baseUrl + "/games/" + cellId + "/reveal";
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + jwt);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER + jwt);
 
         log.info("Executing: " + url);
 

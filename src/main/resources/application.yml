@@ -15,5 +15,7 @@ spring:
     hibernate:
       ddl-auto: none
 
-jwt:
-  secret: 'secret' # JWT secret is here to facilitate coding, it should be in a more secure location
+minesweeper:
+  jwt:
+    secret: 'secret' # JWT secret is here to facilitate coding, it should be in a more secure location
+  base_url: 'http://localhost:8080'

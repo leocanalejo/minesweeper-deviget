@@ -17,7 +17,7 @@ public class JwtUtil {
 
     public static final long JWT_TOKEN_VALIDITY = 1000 * 60 * 60 * 24;
 
-    @Value("${jwt.secret}")
+    @Value("${minesweeper.jwt.secret}")
     private String secret;
 
     public String getUsernameFromToken(String token) {
