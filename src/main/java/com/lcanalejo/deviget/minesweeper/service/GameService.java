@@ -38,6 +38,10 @@ public class GameService {
 
     @Transactional
     public Game createGame(CreateGame createGame) {
+        if (createGame.getMines().compareTo(createGame.getRows() * createGame.getColumns()) >= 0) {
+            throw new PreconditionException("The number of mines cannot be greater than or equal to the number of cells.");
+        }
+
         GameEntity gameEntity = GameEntity.builder()
                 .name(createGame.getName())
                 .columns(createGame.getColumns())
@@ -127,10 +131,10 @@ public class GameService {
     @Transactional
     protected List<CellEntity> createBoard(Integer rows, Integer columns, Integer mines, GameEntity gameEntity) {
 
-        final int MINE = 99;
+        final int MINE = 99999;
 
         List<CellEntity> cellEntities = new ArrayList<>();
-        int[][] board = new int[columns][rows];
+        int[][] board = new int[rows][columns];
 
         for (int r = 0; r < columns; r++) {
             for (int c = 0; c < rows; c++) {
@@ -144,7 +148,7 @@ public class GameService {
             do {
                 r = (int)(Math.random() * rows);
                 c = (int)(Math.random() * columns);
-            } while (board[r][c] == MINE); // 99 is a mine
+            } while (board[r][c] >= MINE); // 99 is a mine
 
             // Put the mine
             board[r][c] = MINE;
@@ -152,7 +156,7 @@ public class GameService {
             // Iterate the mine's contour to increase the minesAround value
             for (int r2 = MathUtil.max(0, r-1); r2 < MathUtil.min(rows,r+2); r2++) {
                 for (int c2 = MathUtil.max(0,c-1); c2 < MathUtil.min(columns,c+2); c2++) {
-                    if (board[r2][c2] != MINE ) { // If it's not a mine
+                    if (board[r2][c2] < MINE ) { // If it's not a mine
                         board[r2][c2]++; // Increase the mineAround value
                     }
                 }
@@ -165,8 +169,8 @@ public class GameService {
                         .rowPosition(r)
                         .columnPosition(c)
                         .cellStatus(CellStatus.HIDDEN)
-                        .minesAround(board[r][c] != MINE ? board[r][c] : null)
-                        .isMine(board[r][c] == MINE)
+                        .minesAround(board[r][c] < MINE ? board[r][c] : null)
+                        .isMine(board[r][c] >= MINE)
                         .game(gameEntity)
                         .build();
                 CellEntity savedCellEntity = cellService.save(cellEntity);

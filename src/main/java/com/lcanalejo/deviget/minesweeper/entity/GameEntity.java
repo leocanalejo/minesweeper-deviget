@@ -38,11 +38,11 @@ public class GameEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "columns")
-    private Integer columns;
-
     @Column(name = "rows")
     private Integer rows;
+
+    @Column(name = "columns")
+    private Integer columns;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
